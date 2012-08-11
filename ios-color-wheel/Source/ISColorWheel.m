@@ -73,7 +73,6 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 @interface ISColorWheel ()
 
 - (PixelRGB)colorAtPoint:(CGPoint)point;
-- (CGPoint)pointForColor:(PixelRGB)color;
 
 - (CGPoint)viewToImageSpace:(CGPoint)point;
 
