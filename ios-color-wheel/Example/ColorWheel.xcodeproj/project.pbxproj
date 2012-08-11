@@ -10,7 +10,6 @@
 		F47929A515D6D2B600B71086 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47929A415D6D2B600B71086 /* UIKit.framework */; };
 		F47929A715D6D2B600B71086 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47929A615D6D2B600B71086 /* Foundation.framework */; };
 		F47929A915D6D2B600B71086 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47929A815D6D2B600B71086 /* CoreGraphics.framework */; };
-		F47929AF15D6D2B600B71086 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F47929AD15D6D2B600B71086 /* InfoPlist.strings */; };
 		F47929B115D6D2B600B71086 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F47929B015D6D2B600B71086 /* main.m */; };
 		F47929B515D6D2B600B71086 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F47929B415D6D2B600B71086 /* AppDelegate.m */; };
 		F47929C115D6D31E00B71086 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F47929C015D6D31E00B71086 /* MainViewController.m */; };
@@ -24,7 +23,6 @@
 		F47929A615D6D2B600B71086 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F47929A815D6D2B600B71086 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F47929AC15D6D2B600B71086 /* ColorWheel-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ColorWheel-Info.plist"; sourceTree = "<group>"; };
-		F47929AE15D6D2B600B71086 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F47929B015D6D2B600B71086 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F47929B215D6D2B600B71086 /* ColorWheel-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ColorWheel-Prefix.pch"; sourceTree = "<group>"; };
 		F47929B315D6D2B600B71086 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -96,7 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				F47929AC15D6D2B600B71086 /* ColorWheel-Info.plist */,
-				F47929AD15D6D2B600B71086 /* InfoPlist.strings */,
 				F47929B015D6D2B600B71086 /* main.m */,
 				F47929B215D6D2B600B71086 /* ColorWheel-Prefix.pch */,
 			);
@@ -164,7 +161,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F47929AF15D6D2B600B71086 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,17 +179,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		F47929AD15D6D2B600B71086 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F47929AE15D6D2B600B71086 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		F47929B615D6D2B600B71086 /* Debug */ = {

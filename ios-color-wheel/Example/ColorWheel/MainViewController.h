@@ -1,10 +1,7 @@
-//
-//  MainViewController.h
-//  ColorWheel
-//
-//  Created by Justin Meiners on 8/11/12.
-//  Copyright (c) 2012 Inline Studios. All rights reserved.
-//
+/*
+ Copyright (c) 2012 Inline Studios
+ Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+ */
 
 #import <UIKit/UIKit.h>
 #import "ISColorWheel.h"
