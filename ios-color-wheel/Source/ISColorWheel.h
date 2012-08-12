@@ -15,23 +15,26 @@
 
 @interface ISColorWheel : UIView
 {
+    UIView* _knobView;
     UIImage* _radialImage;
     float _radius;
-    float _cursorRadius;
+    CGSize _knobSize;
     CGPoint _touchPoint;
     float _brightness;
     bool _continuous;
     id <ISColorWheelDelegate> _delegate;
     
 }
-@property(nonatomic, assign)float radius;
-@property(nonatomic, assign)float cursorRadius;
+@property(nonatomic, retain)UIView* knobView;
+@property(nonatomic, assign)CGSize knobSize;
 @property(nonatomic, assign)float brightness;
 @property(nonatomic, assign)bool continuous;
 @property(nonatomic, assign)id <ISColorWheelDelegate> delegate;
 
 - (void)updateImage;
 - (UIColor*)currentColor;
+
+// TODO - not functioning yet
 - (void)setCurrentColor:(UIColor*)color;
 
 - (void)setTouchPoint:(CGPoint)point;
