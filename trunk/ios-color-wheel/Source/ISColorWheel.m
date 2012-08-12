@@ -70,11 +70,39 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     return pixel;
 }
 
+@interface ISColorKnob : UIView
+
+@end
+
+@implementation ISColorKnob
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame])
+    {
+        self.backgroundColor = [UIColor clearColor];
+    }
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(ctx, 2.0);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor blackColor].CGColor);
+    CGContextAddEllipseInRect(ctx, CGRectInset(self.bounds, 2.0, 2.0));
+    CGContextStrokePath(ctx);
+    
+}
+@end
+
+
 @interface ISColorWheel ()
 
 - (PixelRGB)colorAtPoint:(CGPoint)point;
 
 - (CGPoint)viewToImageSpace:(CGPoint)point;
+- (void)updateKnob;
 
 
 @end
@@ -82,8 +110,8 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 
 @implementation ISColorWheel
-@synthesize radius = _radius;
-@synthesize cursorRadius = _cursorRadius;
+@synthesize knobView = _knobView;
+@synthesize knobSize = _knob;
 @synthesize brightness = _brightness;
 @synthesize delegate = _delegate;
 
@@ -92,8 +120,13 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     if (self = [super initWithFrame:frame])
     {
         _brightness = 1.0;
-        _cursorRadius = 8;
+        _knobSize = CGSizeMake(20, 20);
         _touchPoint = CGPointMake(self.bounds.size.width / 2.0, self.bounds.size.height / 2.0);
+        
+        ISColorKnob* knob = [[ISColorKnob alloc] initWithFrame:CGRectZero];
+        self.knobView = knob;
+        [knob release];
+        
         self.backgroundColor = [UIColor clearColor];
         
         _continuous = false;
@@ -137,6 +170,17 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     return point;
 }
 
+- (void)updateKnob
+{
+    if (!_knobView)
+    {
+        return;
+    }
+    
+    _knobView.bounds = CGRectMake(0, 0, _knobSize.width, _knobSize.height);
+    _knobView.center = _touchPoint;
+}
+
 - (void)updateImage
 {
     int width = _radius * 2.0;
@@ -158,22 +202,21 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 	CGDataProviderRef ref = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
 	CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
     
-	CGImageRef iref = CGImageCreate (width,
-                                     height,
-                                     8,
-                                     24,
-                                     width * 3,
-                                     colorspace,
-                                     bitInfo,
-                                     ref,
-                                     NULL,
-                                     true,
-                                     kCGRenderingIntentDefault
-                                     );
+	CGImageRef cgImageRef = CGImageCreate(width,
+                                    height,
+                                    8,
+                                    24,
+                                    width * 3,
+                                    colorspace,
+                                    bitInfo,
+                                    ref,
+                                    NULL,
+                                    true,
+                                    kCGRenderingIntentDefault);
     
-    _radialImage = [[UIImage imageWithCGImage:iref] retain];
+    _radialImage = [[UIImage imageWithCGImage:cgImageRef] retain];
     
-    CGImageRelease(iref);
+    CGImageRelease(cgImageRef);
     
     [self setNeedsDisplay];
 }
@@ -186,7 +229,26 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 - (void)setCurrentColor:(UIColor*)color
 {
+    //TODO color conversion craziness
+}
+
+- (void)setKnobView:(UIView *)knobView
+{
+    if (_knobView)
+    {
+        [_knobView removeFromSuperview];
+        [_knobView release];
+    }
     
+    _knobView = knobView;
+    
+    if (_knobView)
+    {
+        [_knobView retain];
+        [self addSubview:_knobView];
+    }
+    
+    [self updateKnob];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -206,7 +268,6 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     
     CGContextSetLineWidth(ctx, 2.0);
     CGContextSetStrokeColorWithColor(ctx, [[UIColor blackColor] CGColor]);
-    CGContextAddEllipseInRect(ctx, CGRectMake(_touchPoint.x - _cursorRadius, _touchPoint.y - _cursorRadius, _cursorRadius * 2.0, _cursorRadius * 2.0));
     CGContextAddEllipseInRect(ctx, CGRectMake(center.x - _radius, center.y - _radius, _radius * 2.0, _radius * 2.0));
     CGContextStrokePath(ctx);
 
@@ -223,18 +284,13 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self setTouchPoint:[[touches anyObject] locationInView:self]];
-    [self setNeedsDisplay];
     
-    if (_continuous)
-    {
-        [_delegate colorWheelDidChangeColor:self];
-    }
+    [_delegate colorWheelDidChangeColor:self];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self setTouchPoint:[[touches anyObject] locationInView:self]];
-    [self setNeedsDisplay];
     
     if (_continuous)
     {
@@ -271,6 +327,8 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
         
         _touchPoint = CGPointMake(center.x + vec.x * _radius, center.y + vec.y * _radius);
     }
+    
+    [self updateKnob];
 }
 
 @end
