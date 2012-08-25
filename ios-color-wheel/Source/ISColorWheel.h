@@ -32,10 +32,10 @@
 @property(nonatomic, assign)id <ISColorWheelDelegate> delegate;
 
 - (void)updateImage;
+
+- (void)setCurrentColor:(UIColor*)color;
 - (UIColor*)currentColor;
 
-// TODO - not functioning yet
-- (void)setCurrentColor:(UIColor*)color;
 
 - (void)setTouchPoint:(CGPoint)point;
 

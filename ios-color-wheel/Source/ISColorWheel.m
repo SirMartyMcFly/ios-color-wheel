@@ -141,7 +141,7 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     
     float angle = atan2(point.x - center.x, point.y - center.y) + M_PI;
     float dist = ISColorWheel_PointDistance(point, CGPointMake(center.x, center.y));
-    
+        
     float hue = angle / (M_PI * 2.0f);
     
     hue = MIN(hue, 1.0f - .0000001f);
@@ -229,7 +229,27 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 - (void)setCurrentColor:(UIColor*)color
 {
-    //TODO color conversion craziness
+    float h;
+    float s;
+    float b;
+    float a;
+    
+    [color getHue:&h saturation:&s brightness:&b alpha:&a];
+    
+    self.brightness = b;
+    
+    CGPoint center = CGPointMake(_radius, _radius);
+    
+    float angle = (h * (M_PI * 2.0)) + M_PI / 2;
+    float dist = s * _radius;
+        
+    CGPoint point;
+    point.x = center.x + (cosf(angle) * dist);
+    point.y = center.y + (sinf(angle) * dist);
+
+    
+    [self setTouchPoint: point];
+    [self updateImage];
 }
 
 - (void)setKnobView:(UIView *)knobView
@@ -329,6 +349,7 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     }
     
     [self updateKnob];
+    
 }
 
 @end
