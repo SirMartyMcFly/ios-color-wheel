@@ -119,6 +119,7 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 {
     if (self = [super initWithFrame:frame])
     {
+        _radialImage = nil;
         _brightness = 1.0;
         _knobSize = CGSizeMake(20, 20);
         _touchPoint = CGPointMake(self.bounds.size.width / 2.0, self.bounds.size.height / 2.0);
@@ -132,6 +133,18 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
         _continuous = false;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    if (_radialImage)
+    {
+        [_radialImage release];
+        _radialImage = nil;
+    }
+    
+    self.knobView = nil;
+    [super dealloc];
 }
 
 
@@ -157,12 +170,12 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 - (CGPoint)viewToImageSpace:(CGPoint)point
 {    
-    int width = self.bounds.size.width;
-    int height = self.bounds.size.height;
+    float width = self.bounds.size.width;
+    float height = self.bounds.size.height;
     
     point.y = height - point.y;
         
-    CGPoint min = CGPointMake(width / 2 - _radius, height / 2 - _radius);
+    CGPoint min = CGPointMake(width / 2.0 - _radius, height / 2.0 - _radius);
     
     point.x = point.x - min.x;
     point.y = point.y - min.y;
@@ -183,6 +196,12 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 - (void)updateImage
 {
+    if (_radialImage)
+    {
+        [_radialImage release];
+        _radialImage = nil;
+    }
+    
     int width = _radius * 2.0;
     int height = _radius * 2.0;
     
@@ -217,6 +236,8 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     _radialImage = [[UIImage imageWithCGImage:cgImageRef] retain];
     
     CGImageRelease(cgImageRef);
+    CGColorSpaceRelease(colorspace);
+    CGDataProviderRelease(ref);
     
     [self setNeedsDisplay];
 }
@@ -229,10 +250,10 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 - (void)setCurrentColor:(UIColor*)color
 {
-    float h;
-    float s;
-    float b;
-    float a;
+    float h = 0.0;
+    float s = 0.0;
+    float b = 1.0;
+    float a = 1.0;
     
     [color getHue:&h saturation:&s brightness:&b alpha:&a];
     
@@ -325,8 +346,8 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 - (void)setTouchPoint:(CGPoint)point
 {
-    int width = self.bounds.size.width;
-    int height = self.bounds.size.height;
+    float width = self.bounds.size.width;
+    float height = self.bounds.size.height;
     
     CGPoint center = CGPointMake(width / 2.0, height / 2.0);
     
