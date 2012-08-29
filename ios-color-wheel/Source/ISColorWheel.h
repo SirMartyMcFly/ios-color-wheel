@@ -15,8 +15,8 @@
 
 @interface ISColorWheel : UIView
 {
+    CGImageRef _radialImage;
     UIView* _knobView;
-    UIImage* _radialImage;
     float _radius;
     CGSize _knobSize;
     CGPoint _touchPoint;

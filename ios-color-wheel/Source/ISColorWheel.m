@@ -98,6 +98,11 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 
 @interface ISColorWheel ()
+{
+    PixelRGB* _imageData;
+    int _imageDataLength;
+
+}
 
 - (PixelRGB)colorAtPoint:(CGPoint)point;
 
@@ -119,11 +124,15 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 {
     if (self = [super initWithFrame:frame])
     {
-        _radialImage = nil;
+        _radialImage = NULL;
+        _imageData = NULL;
+        
+        _imageDataLength = 0;
+        
         _brightness = 1.0;
         _knobSize = CGSizeMake(20, 20);
         _touchPoint = CGPointMake(self.bounds.size.width / 2.0, self.bounds.size.height / 2.0);
-        
+                
         ISColorKnob* knob = [[ISColorKnob alloc] initWithFrame:CGRectZero];
         self.knobView = knob;
         [knob release];
@@ -139,8 +148,13 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 {
     if (_radialImage)
     {
-        [_radialImage release];
+        CGImageRelease(_radialImage);
         _radialImage = nil;
+    }
+    
+    if (_imageData)
+    {
+        free(_imageData);
     }
     
     self.knobView = nil;
@@ -196,9 +210,14 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
 
 - (void)updateImage
 {
+    if (self.bounds.size.width == 0 || self.bounds.size.height == 0)
+    {
+        return;
+    }
+    
     if (_radialImage)
     {
-        [_radialImage release];
+        CGImageRelease(_radialImage);
         _radialImage = nil;
     }
     
@@ -206,22 +225,32 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     int height = _radius * 2.0;
     
     int dataLength = sizeof(PixelRGB) * width * height;
-    PixelRGB* data = malloc(dataLength);
+    
+    if (dataLength != _imageDataLength)
+    {
+        if (_imageData)
+        {
+            free(_imageData);
+        }
+        _imageData = malloc(dataLength);
+        
+        _imageDataLength = dataLength;
+    }
     
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
-            data[x + y * width] = [self colorAtPoint:CGPointMake(x, y)];
+            _imageData[x + y * width] = [self colorAtPoint:CGPointMake(x, y)];
         }
     }
     
     CGBitmapInfo bitInfo = kCGBitmapByteOrderDefault;
     
-	CGDataProviderRef ref = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
+	CGDataProviderRef ref = CGDataProviderCreateWithData(NULL, _imageData, dataLength, NULL);
 	CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
     
-	CGImageRef cgImageRef = CGImageCreate(width,
+	_radialImage= CGImageCreate(width,
                                     height,
                                     8,
                                     24,
@@ -233,9 +262,7 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
                                     true,
                                     kCGRenderingIntentDefault);
     
-    _radialImage = [[UIImage imageWithCGImage:cgImageRef] retain];
-    
-    CGImageRelease(cgImageRef);
+        
     CGColorSpaceRelease(colorspace);
     CGDataProviderRelease(ref);
     
@@ -305,7 +332,10 @@ PixelRGB ISColorWheel_HSBToRGB (float h, float s, float v)
     CGContextAddEllipseInRect(ctx, CGRectMake(center.x - _radius, center.y - _radius, _radius * 2.0, _radius * 2.0));
     CGContextClip(ctx);
     
-    CGContextDrawImage(ctx, CGRectMake(center.x - _radius, center.y - _radius, _radius * 2.0, _radius * 2.0), [_radialImage CGImage]);
+    if (_radialImage)
+    {
+        CGContextDrawImage(ctx, CGRectMake(center.x - _radius, center.y - _radius, _radius * 2.0, _radius * 2.0), _radialImage);
+    }
     
     CGContextSetLineWidth(ctx, 2.0);
     CGContextSetStrokeColorWithColor(ctx, [[UIColor blackColor] CGColor]);
