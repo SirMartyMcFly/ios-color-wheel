@@ -35,6 +35,7 @@
     _brightnessSlider.minimumValue = 0.0;
     _brightnessSlider.maximumValue = 1.0;
     _brightnessSlider.value = 1.0;
+    _brightnessSlider.continuous = true;
     [_brightnessSlider addTarget:self action:@selector(changeBrightness:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:_brightnessSlider];
     
