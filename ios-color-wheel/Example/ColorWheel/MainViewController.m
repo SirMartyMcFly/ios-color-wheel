@@ -29,17 +29,17 @@
     [self.view addSubview:_colorWheel];
     
     _brightnessSlider = [[UISlider alloc] initWithFrame:CGRectMake(size.width * .4,
-                                                                   size.height * .9,
+                                                                   size.height * .8,
                                                                    size.width * .5,
                                                                    size.height * .1)];
     _brightnessSlider.minimumValue = 0.0;
     _brightnessSlider.maximumValue = 1.0;
     _brightnessSlider.value = 1.0;
-    [_brightnessSlider addTarget:self action:@selector(changeBrightness:) forControlEvents:UIControlEventTouchUpInside];
+    [_brightnessSlider addTarget:self action:@selector(changeBrightness:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:_brightnessSlider];
     
     _wellView = [[UIView alloc] initWithFrame:CGRectMake(size.width * .1,
-                                                         size.height * .9,
+                                                         size.height * .8,
                                                          size.width * .2,
                                                          size.height * .1)];
     

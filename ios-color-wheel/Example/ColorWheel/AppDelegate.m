@@ -22,6 +22,7 @@
 
     _mainViewController = [[MainViewController alloc] init];
     _mainViewController.view.frame = _window.bounds;
+    _window.rootViewController = _mainViewController;
     [_window addSubview:_mainViewController.view];
     [_window makeKeyAndVisible];
     return YES;
